@@ -15,6 +15,9 @@ RUN pip install --no-cache-dir --upgrade pip \
 # Copy app source code
 COPY . .
 
+# Ensure the /app/data directory exists and is writable
+RUN mkdir -p /app/data && chmod -R 777 /app/data
+
 # Expose FastAPI port
 EXPOSE 8000
 

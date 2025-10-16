@@ -116,3 +116,7 @@ storage/
 cache/
 sessions/
 __snapshots__/
+
+# Ignore SQLite DB files
+*.db
+backend/data/
