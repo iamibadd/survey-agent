@@ -94,7 +94,7 @@ The system ranks interests by LLM-assigned confidence (highest first). Reasons a
 3. Open the `.env` file in the root folder and replace:
    - `OPENAI_API_KEY=your-key-from-openrouter.ai` (get it from https://openrouter.ai/)
 4. Build the Docker container: `docker-compose up --build`
-5. Open your browser at http://localhost:8000/docs (use the FastAPI Swagger UI to test endpoints) or connect a frontend (e.g., React) to the API.
+5. Open your browser at http://localhost:8000/docs (use the FastAPI Swagger UI to test endpoints).
 6. Total setup time: ~5 minutes if Docker and Docker Compose are installed.
 
 ## Short Demo Script (Happy Path)
@@ -134,8 +134,8 @@ _This test runs automatically when the app starts. This proves the core flow: se
 - **Response**:
   ```json
   {
-    "sessionId": integer,  // Newly created session ID
-    "initialMessage": "string"  // AI's initial response
+    "sessionId": "integer",
+    "initialMessage": "string"
   }
   ```
 - **Errors**:
@@ -149,8 +149,8 @@ _This test runs automatically when the app starts. This proves the core flow: se
 - **Request Body**:
   ```json
   {
-    "sessionId": integer,  // ID of the session
-    "message": "string"    // User's message
+    "sessionId": "integer", // ID of the session
+    "message": "string" // User's message
   }
   ```
 - **Response**:
@@ -174,11 +174,10 @@ _This test runs automatically when the app starts. This proves the core flow: se
   ```json
   [
     {
-      "name": "string",      // Interest name
-      "confidence": float,   // Confidence score (0 to 1)
-      "rationale": "string"  // Explanation for inferred interest
-    },
-    ...
+      "name": "string", // Interest name
+      "confidence": "float", // Confidence score (0 to 1)
+      "rationale": "string" // Explanation for inferred interest
+    }
   ]
   ```
 - **Errors**:
@@ -226,9 +225,9 @@ _This test runs automatically when the app starts. This proves the core flow: se
 - **Response**:
   ```json
   {
-    "id": integer,      // Session ID
-    "paused": boolean,  // Whether the session is paused
-    "consent": boolean  // Whether user consent was given
+    "id": "integer", // Session ID
+    "paused": "boolean", // Whether the session is paused
+    "consent": "boolean" // Whether user consent was given
   }
   ```
 - **Errors**:
@@ -259,12 +258,11 @@ _This test runs automatically when the app starts. This proves the core flow: se
   ```json
   [
     {
-      "id": integer,      // Session ID
+      "id": "integer", // Session ID
       "prompt": "string", // Initial prompt
-      "paused": boolean,  // Paused status
-      "consent": boolean  // Consent status
-    },
-    ...
+      "paused": "boolean", // Paused status
+      "consent": "boolean" // Consent status
+    }
   ]
   ```
 - **Errors**: None.
@@ -279,13 +277,13 @@ _This test runs automatically when the app starts. This proves the core flow: se
 - **Query Parameters**:
   - `limit`: Integer (default: 10) specifying the maximum number of messages to return.
 - **Response**:
-  ```json
+  ```bash
   {
-    "session_id": integer,
+    "session_id": "integer",
     "messages": [
       {
-        "role": "user" | "agent",  // Message sender
-        "content": "string"        // Message text
+        "role": "user" | "agent",
+        "content": "string"
       },
       ...
     ]
