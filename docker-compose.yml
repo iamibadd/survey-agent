@@ -1,0 +1,16 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/sessions.db:/app/sessions.db
+    env_file:
+      - .env  # Load env vars from root .env file
+    environment:
+      PYTHONUNBUFFERED: 1
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
