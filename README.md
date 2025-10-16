@@ -127,8 +127,8 @@ _This test runs automatically when the app starts. This proves the core flow: se
 - **Request Body**:
   ```json
   {
-    "prompt": "string", // Initial user message to start the session
-    "consent": true // User consent for session creation
+    "prompt": "string",
+    "consent": true
   }
   ```
 - **Response**:
@@ -149,14 +149,14 @@ _This test runs automatically when the app starts. This proves the core flow: se
 - **Request Body**:
   ```json
   {
-    "sessionId": "integer", // ID of the session
-    "message": "string" // User's message
+    "sessionId": "integer",
+    "message": "string"
   }
   ```
 - **Response**:
   ```json
   {
-    "agentMessage": "string" // AI's response to the message
+    "agentMessage": "string"
   }
   ```
 - **Errors**:
@@ -174,9 +174,9 @@ _This test runs automatically when the app starts. This proves the core flow: se
   ```json
   [
     {
-      "name": "string", // Interest name
-      "confidence": "float", // Confidence score (0 to 1)
-      "rationale": "string" // Explanation for inferred interest
+      "name": "string",
+      "confidence": "float",
+      "rationale": "string"
     }
   ]
   ```
@@ -207,7 +207,7 @@ _This test runs automatically when the app starts. This proves the core flow: se
 - **Path Parameters**:
   - `sessionId`: Integer ID of the session.
 - **Response**:
-  ```json
+  ```bash
   {
     "status": "resumed"
   }
@@ -225,9 +225,9 @@ _This test runs automatically when the app starts. This proves the core flow: se
 - **Response**:
   ```json
   {
-    "id": "integer", // Session ID
-    "paused": "boolean", // Whether the session is paused
-    "consent": "boolean" // Whether user consent was given
+    "id": "integer",
+    "paused": "boolean",
+    "consent": "boolean"
   }
   ```
 - **Errors**:
@@ -258,10 +258,10 @@ _This test runs automatically when the app starts. This proves the core flow: se
   ```json
   [
     {
-      "id": "integer", // Session ID
-      "prompt": "string", // Initial prompt
-      "paused": "boolean", // Paused status
-      "consent": "boolean" // Consent status
+      "id": "integer",
+      "prompt": "string",
+      "paused": "boolean",
+      "consent": "boolean"
     }
   ]
   ```
