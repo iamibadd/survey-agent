@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session as DBSession
 
 from config.db import get_db, init_db
 from models.chat import Session, Interest
-from agent.handlers import get_agent_response, get_infer_interests
+from agent.handlers import get_agent_response, get_infer_interests, prompt_generator
 from memory.sqlite import ClearMemory, GetHistory
 
 
@@ -62,8 +62,11 @@ class SendMessage(BaseModel):
 # ============================================================
 @app.post("/start-session")
 async def start_session(data: StartSession, db: DBSession = Depends(get_db)):
+    # Create a dynamic prompt based on the user query
+    prompt = await prompt_generator(data.prompt)
+
     # Create and persist a new chat session
-    session = Session(prompt=data.prompt, consent=data.consent, paused=False)
+    session = Session(prompt=prompt, consent=data.consent, paused=False)
     db.add(session)
     db.commit()
     db.refresh(session)
@@ -168,11 +171,19 @@ async def get_session(sessionId: int, db: DBSession = Depends(get_db)):
 # ============================================================
 @app.delete("/session/{sessionId}")
 async def delete_session(sessionId: int, db: DBSession = Depends(get_db)):
-    # Delete interests tied to this session
-    db.query(Interest).filter(Interest.session_id == sessionId).delete()
+    # Fetch the session first
+    session = db.query(Session).filter(
+        Session.id == sessionId, Session.deleted == False).first()
+    if not session:
+        raise HTTPException(
+            status_code=404, detail="Session not found or already deleted")
 
-    # Delete session record itself
-    db.query(Session).filter(Session.id == sessionId).delete()
+    # Mark related interests as deleted
+    db.query(Interest).filter(Interest.session_id ==
+                              sessionId).update({"deleted": True})
+
+    # Mark the session as deleted
+    session.deleted = True
 
     # Clear in-memory chat history (SQLite memory backend)
     ClearMemory(session_id=sessionId)
@@ -186,7 +197,7 @@ async def delete_session(sessionId: int, db: DBSession = Depends(get_db)):
 # ============================================================
 @app.get("/sessions")
 async def get_sessions(db: DBSession = Depends(get_db)):
-    sessions = db.query(Session).all()
+    sessions = db.query(Session).filter(Session.deleted == False).all()
     return sessions
 
 
@@ -194,7 +205,7 @@ async def get_sessions(db: DBSession = Depends(get_db)):
 # Get the last N messages for a session (for chat display)
 # ============================================================
 @app.get("/sessions/{sessionId}/messages")
-def get_last_messages(sessionId: int, limit: int = 10):
+def get_last_messages(sessionId: int, limit: int = 100):
     """
     Returns the last `limit` non-empty messages from the chat history.
     Useful for frontend chat replay.

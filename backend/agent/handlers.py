@@ -1,7 +1,7 @@
 from langchain_core.messages import HumanMessage
 
 from memory.sqlite import GetMemory
-from .chains import get_conversation_chain, get_infer_chain
+from .chains import get_conversation_chain, get_infer_chain, prompt_generator_chain
 
 
 # =======================================
@@ -52,3 +52,19 @@ async def get_infer_interests(session_id: int):
         # Log and handle inference errors gracefully
         print("Error inferring interests:", e)
         return []
+
+
+# =============================
+# Short Prompt Generator
+# =============================
+async def prompt_generator(prompt):
+    try:
+        chain = prompt_generator_chain()
+
+        result = await chain.ainvoke({"prompt": prompt})
+        return result
+    except Exception as e:
+        # Log and handle prompt generation errors gracefully
+        err = f"Error generating prompt = {e}"
+        print("Error generating prompt:", e)
+        return err

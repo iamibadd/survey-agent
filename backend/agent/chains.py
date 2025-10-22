@@ -1,6 +1,6 @@
-from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder, PromptTemplate
 from langchain.schema.runnable import RunnablePassthrough, RunnableLambda
-from langchain_core.output_parsers import JsonOutputParser
+from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 
 from llms.openai import OpenAIChatModel, OpenAIChatConfig
 from memory.sqlite import GetMemory
@@ -115,4 +115,33 @@ def get_infer_chain():
         | JsonOutputParser()  # Converts model output into JSON format
     )
 
+    return chain
+
+# =============================
+# Short Prompt Generator
+# =============================
+
+
+def prompt_generator_chain():
+    # Define a text template that instructs the model to generate
+    # a short summary or one-liner based on a user-provided query.
+    # The `{prompt}` variable will be replaced dynamically with the actual query at runtime.
+    template = "Generate a short summary or one-liner based on the following user query: {prompt}"
+
+    # Create a LangChain prompt object from the above template.
+    # This object manages how input variables (like {prompt}) are formatted
+    # and passed into the model.
+    prompt_template = PromptTemplate.from_template(template)
+
+    # Combine (pipe) the prompt template with the model to form a "chain".
+    # The chain represents a complete sequence of operations:
+    #   1. Take user input and fill it into the template.
+    #   2. Send the resulting prompt to the model.
+    #   3. Return the model's generated output in string format.
+    #
+    # The `|` operator is LangChain's way of composing modular steps into a runnable pipeline.
+    chain = prompt_template | model | StrOutputParser()
+
+    # Return the constructed chain so it can be invoked later
+    # with specific input data (e.g., {"prompt": "Explain blockchain in one line"}).
     return chain
