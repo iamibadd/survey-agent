@@ -69,5 +69,8 @@ def ClearMemory(session_id: int):
     Args:
         session_id (int): Unique identifier for the conversation session.
     """
-    history = GetHistory(session_id=session_id)
-    history.clear()  # Removes all stored chat records for this session
+    try:
+        history = GetHistory(session_id=session_id)
+        history.clear()  # Removes all stored chat records for this session
+    except Exception as e:
+        print(f"Failed to clear chat memory for session {session_id}: {e}")

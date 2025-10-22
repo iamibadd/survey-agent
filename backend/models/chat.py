@@ -2,9 +2,8 @@ from sqlalchemy import Boolean, Column, Integer, String, Float, ForeignKey
 # Import shared Base class (usually from declarative_base)
 from .base import Base
 
+
 # Represents a user chat session or conversation
-
-
 class Session(Base):
     __tablename__ = "sessions"
 
@@ -18,7 +17,10 @@ class Session(Base):
     consent = Column(Boolean)
 
     # Indicates if the session is currently paused
-    paused = Column(Boolean)
+    paused = Column(Boolean, default=False)
+
+    # Indicates if the session is soft deleted
+    deleted = Column(Boolean, default=False)
 
 
 # Represents interests or topics detected within a session
@@ -39,3 +41,6 @@ class Interest(Base):
 
     # The reasoning or explanation for why this interest was assigned
     rationale = Column(String)
+
+    # Indicates if the session is soft deleted
+    deleted = Column(Boolean, default=False)
